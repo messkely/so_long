@@ -1,26 +1,32 @@
-NAME = so_long
-FILES = mandatory/so_long.c
-OBJ = $(FILES:.c=.o)
-CC = cc
-FLAGS = -Wall -Wextra -Werror
-RM = rm -f
+NAME		= so_long
+CC			= cc
+CFLAGS		= -Wextra -Wall -Werror -Ofast
+HEADERS		= -Iinclude
+MLX_FLAGS	= lib/libmlx42.a lib/libglfw3.a -framework \
+			Cocoa -framework OpenGL -framework IOKit
+SRCS		= mandatory/so_long.c mandatory/read_map.c mandatory/ft_split.c
+# SRCS		= mandatory/so_long.c
+OBJS		= $(SRCS:.c=.o)
+RM			= rm -rf
 
-$(NAME): $(OBJ)
-	$(CC) $(OBJ) -Lmlx -lmlx -framework OpenGL -framework AppKit -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $^ $(MLX_FLAGS) $(HEADERS) -o $@
 
-all : $(NAME)
+all: $(NAME)
 
-%.o : %.c includes/so_long.h
-	$(CC) $(FLAGS) -c $< -o $@
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-clean :
-	$(RM) $(OBJ)
+clean:
+	$(RM) $(OBJS)
 
-fclean : clean
+fclean: clean
 	$(RM) $(NAME)
 
-re : fclean all
-	clear
-	./so_long
+re: fclean all
 
-.PHONY : clean
+test : re
+	make clean
+	clear && ./so_long "../assets/map.ber"
+
+.PHONY: clean
