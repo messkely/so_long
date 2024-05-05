@@ -1,165 +1,119 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.c                                          :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/05 23:05:11 by messkely          #+#    #+#             */
-/*   Updated: 2024/04/29 18:10:42 by messkely         ###   ########.fr       */
+/*   Created: 2024/04/18 08:32:45 by messkely          #+#    #+#             */
+/*   Updated: 2024/04/18 08:32:48 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
 
-static mlx_image_t *image_player = NULL;
-
 void ft_error(void)
 {
-	puts(mlx_strerror(mlx_errno));
-	exit(EXIT_FAILURE);
+	write(1, "Error\n", 5);
+	exit(1);
 }
-// ---------------------------------Background---------------------------------- //
-void background(void *mlx)
+int ft_serch(char *str, char *to_find)
 {
-	mlx_texture_t *background;
-	mlx_image_t *image;
+	int i;
+	int j;
 
-	image = NULL;
-	background = mlx_load_png("assets/background.png");
-	if (!background)
-		ft_error();
-	if (image)
-		mlx_delete_image(mlx, image);
-	image = mlx_texture_to_image(mlx, background);
-	if (!image)
-		ft_error();
-	mlx_resize_image(image, 50, 50);
-	if (mlx_image_to_window(mlx, image, 0, 0) < 0)
-		ft_error();
-}
-// ---------------------------------Player---------------------------------- //
-void player(void *mlx, mlx_texture_t *texture_player)
-{
-	texture_player = mlx_load_png("assets/skeleton.png");
-	if (!texture_player)
-		ft_error();
-	if (image_player)
-		mlx_delete_image(mlx, image_player);
-	image_player = mlx_texture_to_image(mlx, texture_player);
-	if (!image_player)
-		ft_error();
-	mlx_resize_image(image_player, 50, 50);
-	if (mlx_image_to_window(mlx, image_player, 0, 0) < 0)
-		ft_error();
-}
-// ---------------------------------Coin---------------------------------- //
-void coin(void *mlx)
-{
-	mlx_texture_t *coin;
-	static mlx_image_t *img;
-
-	img = NULL;
-	coin = mlx_load_png("assets/coin.png");
-	if (!coin)
-		ft_error();
-	if (img)
-		mlx_delete_image(mlx, img);
-	img = mlx_texture_to_image(mlx, coin);
-	if (!img)
-		ft_error();
-	mlx_resize_image(img, 50, 50);
-	if (mlx_image_to_window(mlx, img, 100, 100) < 0)
-		ft_error();
-}
-// ---------------------------------Movement---------------------------------- //
-void ft_key_press(mlx_key_data_t keydata, void *param)
-{
-	mlx_t *mlx;
-	area *
-
-	mlx = (mlx_t *)param;
-	if (keydata.key == MLX_KEY_ESCAPE)
-		mlx_close_window(mlx);
-	if (keydata.key == MLX_KEY_UP && keydata.action == MLX_PRESS)
+	i = 0;
+	while (str[i])
 	{
-		image_player->instances[0].y -= 50;
-		printf("hhh\n");
-	}
-	if (keydata.key == MLX_KEY_DOWN && keydata.action == MLX_PRESS)
-		image_player->instances[0].y += 50;
-	if (keydata.key == MLX_KEY_LEFT && keydata.action == MLX_PRESS)
-		image_player->instances[0].x -= 50;
-	if (keydata.key == MLX_KEY_RIGHT && keydata.action == MLX_PRESS)
-		image_player->instances[0].x += 50;
-	if (keydata.key == MLX_KEY_DELETE)
-		mlx_delete_image(mlx, image_player);
-}
-// ---------------------------------Program---------------------------------- //
-
-// int32_t main()
-// {
-// 	mlx_t *mlx;
-// 	mlx_texture_t *texture_player;
-// 		texture_player = NULL;
-// 		mlx = mlx_init(5 * 50, 13 * 50, "MLX42", true);
-// 		if (!mlx)
-// 			ft_error();
-// 		background(mlx);
-// 		coin(mlx);
-// 		mlx_key_hook(mlx, ft_key_press, mlx);
-// 		player(mlx, texture_player);
-// 		mlx_loop(mlx);
-// 		mlx_delete_image(mlx, image_player);
-// 		mlx_delete_texture(texture_player);
-// 		mlx_terminate(mlx);
-// 		return (EXIT_SUCCESS);
-// }
-
-int32_t main(int ac, char **av)
-{
-	if (ac == 2)
-	{
-		char *map;
-		char **map_lines;
-		int height_map;
-		int width_map;
-		int i = 0;
-		mlx_t *mlx;
-		mlx_texture_t *texture_player;
-
-		check_file_is_valid(av[1]);
-		map = ft_read_map(av[1]);
-		map_lines = ft_split(map, '\n');
-		width_map = ft_strlen(map_lines[0]);
-		height_map = num_words(map, '\n');
-		// ####################
-		texture_player = NULL;
-		mlx = mlx_init(width_map * 50, height_map * 50, "MLX42", true);
-		if (!mlx)
-			ft_error();
-		// ####################
-		while (map_lines[i])
+		j = 0;
+		while (to_find[j])
 		{
-			int j = 0;
-			while (map_lines[i][j])
-			{
-				if (map_lines[i][j] == '1')
-				{
-					background(mlx);
-				}
-				j++;
-			}
-			i++;
+			if (str[i] == to_find[j])
+				break;
+			j++;
 		}
-		free(map);
-		mlx_loop(mlx);
-		mlx_delete_image(mlx, image_player);
-		mlx_delete_texture(texture_player);
-		mlx_terminate(mlx);
-		return (EXIT_SUCCESS);
+		i++;
 	}
-	else
-		write(1, "The program accept one param\n", 29);
-	// atexit(system("leaks a.out"));
+	if (str[i] == '\0')
+		return (1);
+	return (0);
+}
+
+int is_duplicated(char *str)
+{
+	int i;
+	int count_P;
+	int count_E;
+	int count_C;
+
+	i = 0;
+	count_P = 0;
+	count_E = 0;
+	count_C = 0;
+	while (str[i])
+	{
+		if (str[i] == 'P')
+			count_P++;
+		else if (str[i] == 'E')
+			count_E++;
+		else if (str[i] == 'C')
+			count_C++;
+		i++;
+	}
+	if (count_P != 1 || count_E != 1 || count_C < 1)
+		return (1);
+	return (0);
+}
+
+
+void check_walls(char *map)
+{
+	int i = 0;
+	while (map[i] == '1' && map[i] != '\n')
+		i++;
+	if (map[i] != '\n')
+		ft_error();
+	while (map[i])
+	{
+		if (map[i - 1] == '\n' && (map[i] != '1' || map[i - 2] != '1'))
+			ft_error();
+		i++;
+	}
+	i--;
+	while (map[i] != '\n' && map[i] == '1')
+		i--;
+	if (map[i] != '\n')
+		ft_error();
+}
+
+void check_map_is_valid(char *map)
+{
+	int i;
+
+	i = 0;
+	while (map[i])
+	{
+		if (!ft_serch(map, "01CEP") || is_duplicated(map))
+			ft_error();
+		i++;
+	}
+	check_walls(map);
+}
+
+void	flood_fill()
+{
+	d;
+}
+int main(int ac, char **av)
+{
+	t_map *map;
+	char *map2d;
+
+	if (ac != 2)
+	{
+		write(2, "usage: ./so_long *.ber\n", 23);
+		exit(1);
+	}
+	map2d = ft_read_map(av[1]);
+	check_map_is_valid(map2d);
 }

@@ -28,5 +28,7 @@ re: fclean all
 test : re
 	make clean
 	clear && ./so_long "../assets/map.ber"
+parse :
+	cc mandatory/so_long.c mandatory/read_map.c mandatory/ft_split.c && ./a.out "assets/map.ber"
 
 .PHONY: clean

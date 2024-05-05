@@ -12,30 +12,32 @@
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
-
-#define WIDTH 512
-#define HEIGHT 512
-// #define BLOCK ""
-#define HEIGHT 512
-
-# include "MLX42/MLX42.h"
+# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdio.h>
-# include <string.h>
 # include <fcntl.h>
+# include "MLX42/MLX42.h"
+# define MAX_WIDTH 1024
+# define MAX_HEIGHT 1024
 
-typedef struct s_mlx
+typedef struct s_map
 {
-	int x;
-	int y;
-	mlx_t	*ptr;
-} 		area;
+	char	*path;
+	int		fd;
+	char	**map2d;
+	int		x;
+	int		y;
+}	t_map;
 
 char	**ft_split(const char *s, char c);
-int ft_strlen(char *str);
-char *ft_read_map(char *map_path);
-int	num_words(const char *s, char c);
-void check_file_is_valid(char *file);
+int		ft_strlen(char *str);
+char	*ft_read_map(char *map_path);
+int		num_words(const char *s, char c);
+void	check_file_is_valid(char *file);
+int		ft_serch(char *str, char *to_find);
+void	ft_error(void);
+int		is_duplicated(char *str);
+void	check_walls(char *map);
+void	check_map_is_valid(char *map);
 
 #endif
