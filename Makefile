@@ -4,8 +4,8 @@ CFLAGS		= -Wextra -Wall -Werror -Ofast
 HEADERS		= -Iinclude
 MLX_FLAGS	= lib/libmlx42.a lib/libglfw3.a -framework \
 			Cocoa -framework OpenGL -framework IOKit
-SRCS		= mandatory/so_long.c mandatory/read_map.c mandatory/ft_split.c
-# SRCS		= mandatory/so_long.c
+SRCS		= mandatory/so_long.c mandatory/read_map.c mandatory/ft_split.c mandatory/mlx_workspace.c \
+			mandatory/initial_imgs.c mandatory/so_long_utils.c mandatory/parrsing.c
 OBJS		= $(SRCS:.c=.o)
 RM			= rm -rf
 
@@ -27,8 +27,6 @@ re: fclean all
 
 test : re
 	make clean
-	clear && ./so_long "../assets/map.ber"
-parse :
-	cc mandatory/so_long.c mandatory/read_map.c mandatory/ft_split.c && ./a.out "assets/map.ber"
+	clear && ./so_long "assets/map2.ber"
 
 .PHONY: clean

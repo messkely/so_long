@@ -1,119 +1,64 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 08:32:45 by messkely          #+#    #+#             */
-/*   Updated: 2024/04/18 08:32:48 by messkely         ###   ########.fr       */
+/*   Updated: 2024/05/11 15:55:20 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
 
-void ft_error(void)
+void flood_fill(t_map *my_map, int y, int x)
 {
-	write(1, "Error\n", 5);
-	exit(1);
-}
-int ft_serch(char *str, char *to_find)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (str[i])
+	if (my_map->map2d[y][x] == '1' || my_map->map2d[y][x] == 'x')
+		return;
+	if (my_map->map2d[y][x] == 'E')
 	{
-		j = 0;
-		while (to_find[j])
-		{
-			if (str[i] == to_find[j])
-				break;
-			j++;
-		}
-		i++;
+		if (!my_map->C)
+			my_map->exit_flag = 1;
+		return ;
 	}
-	if (str[i] == '\0')
-		return (1);
-	return (0);
+	if (my_map->map2d[y][x] == 'C')
+		my_map->C--;
+	printf("coin: %d\n", my_map->C);
+	my_map->map2d[y][x] = 'x';
+	flood_fill(my_map, y - 1, x);
+	flood_fill(my_map, y + 1, x);
+	flood_fill(my_map, y, x + 1);
+	flood_fill(my_map, y, x - 1);
 }
 
-int is_duplicated(char *str)
+void f(void)
 {
-	int i;
-	int count_P;
-	int count_E;
-	int count_C;
-
-	i = 0;
-	count_P = 0;
-	count_E = 0;
-	count_C = 0;
-	while (str[i])
-	{
-		if (str[i] == 'P')
-			count_P++;
-		else if (str[i] == 'E')
-			count_E++;
-		else if (str[i] == 'C')
-			count_C++;
-		i++;
-	}
-	if (count_P != 1 || count_E != 1 || count_C < 1)
-		return (1);
-	return (0);
-}
-
-
-void check_walls(char *map)
-{
-	int i = 0;
-	while (map[i] == '1' && map[i] != '\n')
-		i++;
-	if (map[i] != '\n')
-		ft_error();
-	while (map[i])
-	{
-		if (map[i - 1] == '\n' && (map[i] != '1' || map[i - 2] != '1'))
-			ft_error();
-		i++;
-	}
-	i--;
-	while (map[i] != '\n' && map[i] == '1')
-		i--;
-	if (map[i] != '\n')
-		ft_error();
-}
-
-void check_map_is_valid(char *map)
-{
-	int i;
-
-	i = 0;
-	while (map[i])
-	{
-		if (!ft_serch(map, "01CEP") || is_duplicated(map))
-			ft_error();
-		i++;
-	}
-	check_walls(map);
-}
-
-void	flood_fill()
-{
-	d;
+	system("leaks so_long");
 }
 int main(int ac, char **av)
 {
-	t_map *map;
-	char *map2d;
-
+	t_map *my_map;
+	// t_mlx my_mlx;
 	if (ac != 2)
 	{
 		write(2, "usage: ./so_long *.ber\n", 23);
 		exit(1);
 	}
-	map2d = ft_read_map(av[1]);
-	check_map_is_valid(map2d);
+
+	my_map = malloc(sizeof(t_map));
+	if (!my_map)
+	{
+		perror("Failed to allocate memory for map");
+		exit(1);
+	}
+	read_map(av[1], my_map);
+	flood_fill(my_map, my_map->player_pos.y, my_map->player_pos.x);
+	if (my_map->C || my_map->exit_flag)
+		ft_error();
+	free_map(my_map);
+	// read_map(av[1], my_map);
+	// mlx_workspace(&my_mlx, my_map);
+	// free_game(&my_mlx, my_map);
+	atexit(f);
 }

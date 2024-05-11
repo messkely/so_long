@@ -38,7 +38,7 @@ int	num_words(const char *s, char c)
 	return (count);
 }
 
-static char	*ft_word(const char *s, char c)
+static char	*ft_word(const char *s, char c, t_map *my_map)
 {
 	int		i;
 	int		len_w;
@@ -47,6 +47,7 @@ static char	*ft_word(const char *s, char c)
 	len_w = 0;
 	while (s[len_w] && !ft_check(s[len_w], c))
 		len_w++;
+	my_map->size_x = len_w;
 	ptr = (char *)malloc((len_w + 1) * sizeof(char));
 	if (!ptr)
 		return (NULL);
@@ -60,7 +61,7 @@ static char	*ft_word(const char *s, char c)
 	return (ptr);
 }
 
-static char	**split_part(const char *s, char c, char **ptr)
+static char	**split_part(const char *s, char c, char **ptr, t_map *my_map)
 {
 	int	j;
 
@@ -71,7 +72,7 @@ static char	**split_part(const char *s, char c, char **ptr)
 			s++;
 		if (*s != '\0')
 		{
-			ptr[j] = ft_word(s, c);
+			ptr[j] = ft_word(s, c, my_map);
 			if (!ptr[j])
 			{
 				while (j > 0)
@@ -84,11 +85,11 @@ static char	**split_part(const char *s, char c, char **ptr)
 		while (*s && !ft_check(*s, c))
 			s++;
 	}
-	ptr[j] = 0;
+	ptr[j] = NULL;
 	return (ptr);
 }
 
-char	**ft_split(const char *s, char c)
+char	**ft_split(const char *s, char c, t_map *my_map)
 {
 	int		j;
 	int		len;
@@ -98,8 +99,9 @@ char	**ft_split(const char *s, char c)
 		return (NULL);
 	j = 0;
 	len = num_words(s, c);
+	my_map->size_y = len;
 	ptr = (char **)malloc((len + 1) * sizeof(char *));
 	if (!ptr)
 		return (NULL);
-	return (split_part(s, c, ptr));
+	return (split_part(s, c, ptr, my_map));
 }
